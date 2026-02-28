@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesKpr | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="logo/logo-saleskpr-4c-fancy.jpg" alt="SalesKpr Logo" class="brand-logo">
+                <div>
+                    <h1>SalesKpr</h1>
+                    <p>Sell. Track. Grow.</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="help.html" class="btn" style="text-decoration: none; color: inherit;">Help</a>
+                <a href="purchases.html" class="btn" style="text-decoration: none; color: inherit;">Purchases</a>
+                <button id="view-sales-btn" class="btn btn-nav-action">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Sales Log
+                </button>
+                <button id="cart-btn" class="btn btn-nav-action">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Cart (<span id="cart-count">0</span>)
+                </button>
+            </div>
+        </header>
+
+        <!-- Sales Mini Dashboard -->
+        <section id="sales-dashboard" class="sales-dashboard">
+            <div class="dash-header-row">
+                <div class="dash-revenue revenue-grand">
+                    <span class="dash-label">Total Revenue</span>
+                    <span id="stat-total-sales" class="dash-value">$0.00</span>
+                </div>
+                <div class="dash-divider-v"></div>
+                <div class="dash-revenue revenue-selected">
+                    <span class="dash-label">Selected Total</span>
+                    <span id="stat-selected-total" class="dash-value">$0.00</span>
+                </div>
+                <div class="dash-divider-v"></div>
+                <div class="dash-revenue revenue-percent">
+                    <span class="dash-label">Share of Revenue</span>
+                    <span id="stat-selected-percent" class="dash-value">0.0%</span>
+                </div>
+                <div class="dash-divider-v"></div>
+                <div class="dash-org-branding" id="dash-org-branding">
+                    <div class="org-name-area">
+                        <span id="org-name-display" class="org-name-display">Organisation name</span>
+                        <button type="button" id="org-name-btn" class="btn btn-sm org-name-btn">Add name</button>
+                    </div>
+                    <label class="org-logo-wrap" for="org-logo-input" title="Click to upload logo">
+                        <img id="org-logo-preview" src="" alt="" style="display: none;">
+                        <span id="org-logo-placeholder" class="org-logo-placeholder">+ Logo</span>
+                        <input type="file" id="org-logo-input" accept="image/*" style="display: none;">
+                    </label>
+                </div>
+            </div>
+            <div style="height: 1px; background: var(--border-paper); width: 100%;"></div>
+            <div class="dash-performance">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                    <button onclick="toggleRankingSection('product-performance-content')" class="btn btn-sm"
+                        style="padding: 2px 5px; background: transparent; border: none; display: flex; align-items: center; gap: 5px; color: inherit;">
+                        <svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                            style="transition: transform 0.2s ease;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <span class="dash-label" style="margin-bottom: 0; cursor: pointer;">Product Rankings by Total
+                            Sales</span>
+                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="selectAllProducts()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Select All</button>
+                        <button onclick="selectTop3Products()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 3</button>
+                        <button onclick="selectTop50Percent()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 50%</button>
+                        <button onclick="selectTop80Percent()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 80%</button>
+                        <button onclick="clearRankSelection()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Clear</button>
+                    </div>
+                </div>
+                <div id="product-performance-content" class="performance-content">
+                    <div id="product-rankings" class="rankings-list">
+                        <!-- Rankings injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 1px; background: var(--border-paper); width: 100%; margin: 5px 0;"></div>
+
+            <div class="dash-performance">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                    <button onclick="toggleRankingSection('buyer-performance-content')" class="btn btn-sm"
+                        style="padding: 2px 5px; background: transparent; border: none; display: flex; align-items: center; gap: 5px; color: inherit;">
+                        <svg class="toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                            style="transition: transform 0.2s ease;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <span class="dash-label" style="margin-bottom: 0; cursor: pointer;">Buyer Rankings (Top
+                            Customers)</span>
+                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="selectAllBuyers()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Select All</button>
+                        <button onclick="selectTop3Buyers()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 3</button>
+                        <button onclick="selectTop50PercentBuyers()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 50%</button>
+                        <button onclick="selectTop80PercentBuyers()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Top 80%</button>
+                        <button onclick="clearBuyerSelection()" class="btn btn-sm"
+                            style="font-size: 0.65rem; padding: 2px 8px;">Clear</button>
+                    </div>
+                </div>
+                <div id="buyer-performance-content" class="performance-content">
+                    <div id="buyer-rankings" class="rankings-list">
+                        <!-- Buyer rankings injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Record Sale Modal -->
+        <div id="sale-modal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header"
+                    style="border-bottom: 2px solid var(--border-paper); padding-bottom: 15px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                        <div>
+                            <span class="dash-label" style="font-size: 0.6rem; color: #A4B0BE;">ADDING TO CART</span>
+                            <div id="sale-product-name"
+                                style="font-size: 1.2rem; font-weight: 800; color: var(--text-ink); margin-top: 2px;">
+                            </div>
+                        </div>
+                        <div
+                            style="text-align: right; background: rgba(9, 132, 227, 0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(9, 132, 227, 0.1);">
+                            <span class="dash-label" style="font-size: 0.55rem; color: var(--accent-blue);">AVAILABLE
+                                STOCK</span>
+                            <div id="sale-stock-display"
+                                style="font-weight: 900; color: var(--accent-blue); font-size: 1.4rem; line-height: 1;">
+                                0</div>
+                        </div>
+                    </div>
+                </div>
+                <form id="sale-form">
+                    <input type="hidden" id="sale-product-id">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="s-qty">Quantity</label>
+                            <input type="number" id="s-qty" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="s-price">Price per Unit ($)</label>
+                            <input type="number" id="s-price" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="s-remarks">Remarks (Optional)</label>
+                        <textarea id="s-remarks" rows="2" placeholder="e.g. Urgent delivery, specific color..."
+                            style="width: 100%; border: 1px solid var(--border-paper); border-radius: 6px; padding: 8px; font-family: inherit; font-size: 0.9rem;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <p id="sale-summary" style="font-weight: 500; margin-top: 10px;"></p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="button" id="close-sale-modal" class="btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary"
+                            style="background: var(--success); border-color: var(--success);">Add to Cart</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Product Section -->
+        <main class="content-wrapper">
+            <div class="sort-controls" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
+                <!-- Row 1: Sort by logic -->
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span
+                        style="font-size: 0.7rem; font-weight: 700; color: #A4B0BE; text-transform: uppercase; letter-spacing: 1px;">Sort
+                        By</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="setProductSort('name')" class="btn btn-sm sort-btn active"
+                            id="sort-name">A-Z</button>
+                        <button onclick="setProductSort('date')" class="btn btn-sm sort-btn" id="sort-date">Date Added:
+                            Latest</button>
+                        <button onclick="setProductSort('sales')" class="btn btn-sm sort-btn" id="sort-sales">Top
+                            Sales</button>
+                        <button onclick="setProductSort('stock')" class="btn btn-sm sort-btn" id="sort-stock">Low
+                            Stock</button>
+                        <button onclick="setProductSort('price')" class="btn btn-sm sort-btn" id="sort-price">High
+                            Price</button>
+                    </div>
+                </div>
+                <!-- Row 2: Category -->
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span
+                            style="font-size: 0.7rem; font-weight: 700; color: #A4B0BE; text-transform: uppercase; letter-spacing: 1px;">Category</span>
+                        <div id="type-filters" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <!-- Type filters injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Status -->
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span
+                            style="font-size: 0.7rem; font-weight: 700; color: #A4B0BE; text-transform: uppercase; letter-spacing: 1px;">Status</span>
+                        <div id="status-filters" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <!-- Status filters injected here -->
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div id="filter-count"
+                            style="font-size: 0.7rem; font-weight: 700; color: #636E72; background: var(--bg-paper); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-paper); display: none;">
+                            Showing <span id="visible-count">0</span> of <span id="total-count">0</span>
+                        </div>
+                        <button id="add-product-btn" class="btn btn-primary"
+                            style="padding: 5px 12px; font-size: 0.8rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            New Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="product-grid" class="product-grid">
+                <!-- Product cards will be injected here -->
+            </div>
+            <div id="no-products" class="no-data" style="display: none;">
+                No products found. Start by adding a new one.
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="logo/logo-saleskpr-4c-fancy.jpg" alt="SalesKpr Logo" class="brand-logo brand-logo-footer">
+                    <div class="footer-brand-text">
+                        <span class="brand-text">SalesKpr</span>
+                        <span class="brand-tagline">Sell. Track. Grow.</span>
+                    </div>
+                </div>
+                <div class="footer-status">
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">System Live</span>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    © 2026 Mar.sg
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Product Modal (Add/Edit) -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">New Product</h2>
+            </div>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="p-name">Product Name</label>
+                    <input type="text" id="p-name" placeholder="e.g. Premium Leather Notebook" required>
+                </div>
+                <div class="form-group">
+                    <label for="p-type" style="display: flex; justify-content: space-between; align-items: center;">
+                        Product Type
+                        <button type="button" id="manage-types-btn" class="btn btn-sm"
+                            style="padding: 2px 6px; font-size: 0.7rem;">Manage</button>
+                    </label>
+                    <select id="p-type" required>
+                        <!-- Options populated via JS -->
+                    </select>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="p-price">Price ($)</label>
+                        <input type="number" id="p-price" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="p-stock">Stock Level</label>
+                        <input type="number" id="p-stock" min="0" placeholder="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="p-status" style="display: flex; justify-content: space-between; align-items: center;">
+                        Status Tag
+                        <button type="button" id="manage-statuses-btn" class="btn btn-sm"
+                            style="padding: 2px 6px; font-size: 0.7rem;">Manage</button>
+                    </label>
+                    <div id="p-status-container"
+                        style="display: flex; gap: 8px; flex-wrap: wrap; padding: 10px; border: 1px solid var(--border-paper); border-radius: 4px; background: white; min-height: 42px;">
+                        <!-- Checkboxes populated via JS -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="p-image">Product Image</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Current image indicator shown when editing a product that already has an image -->
+                        <div id="current-image-preview"
+                            style="display: none; align-items: center; gap: 10px; padding: 8px 12px; background: #F0FFF4; border: 1px solid #A3E6B8; border-radius: 6px;">
+                            <img id="current-image-thumb" src="" alt="Current"
+                                style="width: 48px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid #A3E6B8;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #27AE60;">âœ“ Image already set
+                                </div>
+                                <div style="font-size: 0.7rem; color: #636E72;">Upload a new file or paste a URL below
+                                    to replace it.</div>
+                            </div>
+                            <button type="button" id="clear-image-btn"
+                                style="font-size: 0.7rem; color: #E74C3C; background: none; border: none; cursor: pointer; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">×
+                                Clear</button>
+                        </div>
+                        <!-- Pending upload: shown when user selects file or pastes URL (before save) -->
+                        <div id="pending-image-preview"
+                            style="display: none; align-items: center; gap: 10px; padding: 8px 12px; background: #F8FAFC; border: 1px solid var(--border-paper); border-radius: 6px;">
+                            <img id="pending-image-thumb" src="" alt="Preview"
+                                style="width: 48px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-paper);">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #636E72;">Selected image</div>
+                                <div id="pending-image-label" style="font-size: 0.7rem; color: #A4B0BE; overflow: hidden; text-overflow: ellipsis;"></div>
+                            </div>
+                            <button type="button" id="clear-pending-image-btn" title="Cancel upload"
+                                style="flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: none; border: 1px solid #E74C3C; color: #E74C3C; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1; padding: 0;">×</button>
+                        </div>
+                        <input type="file" id="p-image" accept="image/*">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 0.7rem; color: #A4B0BE;">OR</span>
+                            <input type="url" id="p-image-url" placeholder="Paste Image URL here..."
+                                style="flex-grow: 1;">
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #636E72; margin-top: 5px;">Best as a wide rectangle (e.g. 16:9)
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="p-desc">Description (Optional)</label>
+                    <textarea id="p-desc" rows="3" placeholder="Additional details..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" id="close-modal" class="btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Product History</h2>
+                <p id="history-product-name" style="font-size: 0.9rem; color: #636E72;"></p>
+            </div>
+            <div id="history-list" class="history-list">
+                <!-- History logs injected here -->
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                <button id="close-history" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Log Modal -->
+    <div id="sales-log-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Sales Log</h2>
+                <p style="font-size: 0.9rem; color: #636E72;">Manage your transactions and adjustments.</p>
+            </div>
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table id="sales-log-table">
+                    <thead style="position: sticky; top: 0; background: var(--bg-paper); z-index: 1;">
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-log-body">
+                        <!-- Sales records injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 30px;">
+                <div style="display: flex; gap: 8px;">
+                    <button id="export-sales-btn" class="btn btn-sm" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export
+                    </button>
+                    <label class="btn btn-sm" style="display: flex; align-items: center; gap: 6px; cursor: pointer; margin: 0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Import
+                        <input type="file" id="import-sales-input" accept=".json,application/json" style="display: none;">
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="clear-voided-btn" class="btn btn-danger" style="display: none;">Clear Voided Entries</button>
+                    <button id="close-sales-log" class="btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Manage Types Modal -->
+    <div id="type-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Manage Product Types</h2>
+                <p style="font-size: 0.9rem; color: #636E72;">Add, edit, or remove product types.</p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="text" id="new-type-input" placeholder="Enter new type name..." style="flex-grow: 1; min-width: 140px;">
+                    <button id="add-type-btn" class="btn">Add</button>
+                    <button id="add-and-select-type-btn" class="btn btn-primary">Add and Select</button>
+                </div>
+            </div>
+
+            <div id="type-list-container" class="history-list" style="max-height: 250px;">
+                <!-- Type items injected here -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                <button id="close-types" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Status Modal -->
+    <div id="status-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Manage Status Tags</h2>
+                <p style="font-size: 0.9rem; color: #636E72;">Add, edit, or remove status tags.</p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="new-status-input" placeholder="Enter new status..." style="flex-grow: 1;">
+                    <button id="add-status-btn" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <div id="status-list-container" class="history-list" style="max-height: 250px;">
+                <!-- Status items injected here -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                <button id="close-status-modal" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer-overlay" class="modal-overlay">
+        <div class="drawer">
+            <div class="modal-header">
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="cart-buyer-name"
+                        style="font-size: 0.7rem; color: #636E72; display: flex; justify-content: space-between; align-items: center;">
+                        Buyer / Client Name
+                        <button type="button" id="manage-buyers-btn" class="btn btn-sm"
+                            style="padding: 2px 6px; font-size: 0.7rem;">Manage</button>
+                    </label>
+                    <input type="text" id="cart-buyer-name" list="buyer-suggestions" placeholder="Enter buyer name..."
+                        style="font-size: 1.1rem; font-weight: 700; padding: 8px 0; border: none; border-bottom: 2px solid var(--border-paper); border-radius: 0; background: transparent; width: 100%;"
+                        onfocus="this.style.borderColor='var(--accent-blue)'"
+                        onblur="this.style.borderColor='var(--border-paper)'">
+                    <datalist id="buyer-suggestions"></datalist>
+                </div>
+                <p style="font-size: 0.75rem; color: #A4B0BE; margin-top: 4px;">Verify items before final entry.</p>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Cart items injected here -->
+            </div>
+            <div class="cart-summary">
+                <div
+                    style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-bottom: 20px;">
+                    <span>Total</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button id="export-chit-btn" class="btn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Export Chit
+                    </button>
+                    <button id="finalize-sale-btn" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; background: var(--success); border-color: var(--success);">Finalize
+                        & Record Sale</button>
+                    <button id="close-cart" class="btn" style="width: 100%; justify-content: center;">Keep
+                        Browsing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Buyers Modal -->
+    <div id="buyer-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Manage Buyers</h2>
+                <p style="font-size: 0.9rem; color: #636E72;">View or rename recorded clients.</p>
+            </div>
+            <div id="buyer-management-list" class="history-list" style="max-height: 300px; margin-top: 15px;">
+                <!-- Buyer list items injected here -->
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                <button id="close-buyer-modal" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Image Viewer Modal -->
+    <div id="image-viewer-modal" class="modal-overlay">
+        <div class="modal"
+            style="padding: 0; background: transparent; box-shadow: none; max-width: 95vw; max-height: 95vh; width: auto; display: flex; align-items: center; justify-content: center; position: relative;">
+            <button id="close-image-viewer" class="btn"
+                style="position: absolute; top: -40px; right: 0; background: white; border-radius: 50%; width: 34px; height: 34px; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <img id="full-image-display" src=""
+                style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); background: white;">
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 400px; text-align: center; padding: 30px;">
+            <div id="confirm-icon" style="font-size: 3.5rem; margin-bottom: 20px; line-height: 1;">â“</div>
+            <h2 id="confirm-title" style="margin-bottom: 12px; font-size: 1.4rem;">Are you sure?</h2>
+            <p id="confirm-message" style="color: #636E72; margin-bottom: 30px; line-height: 1.5; font-size: 1rem;"></p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="confirm-cancel" class="btn"
+                    style="flex: 1; justify-content: center; font-weight: 700;">Cancel</button>
+                <button id="confirm-ok" class="btn btn-primary"
+                    style="flex: 1; justify-content: center; font-weight: 700; background: var(--accent-blue);">Yes,
+                    Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #2D3436; color: white; padding: 14px 24px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.25); opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; z-index: 9999; white-space: nowrap;"></div>
+    <script src="shared.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+/**
+ * Purchases page theme - 10-20% darker than Sales for visual distinction
+ */
+body.purchases-page {
+    --bg-paper: #DDD8CC;
+    --text-ink: #1a1d1f;
+    --accent-blue: #076BB8;
+    --border-paper: #B8C2C9;
+    --success: #00997A;
+    --danger: #B32829;
+}
+
+body.purchases-page .sales-dashboard,
+body.purchases-page .content-wrapper,
+body.purchases-page .modal,
+body.purchases-page .drawer {
+    background: #E8E4DB;
+}
+
+body.purchases-page .product-card {
+    background: #E8E4DB;
+}
+
+body.purchases-page .rank-item {
+    background: #D8D2C8;
+}
+
+body.purchases-page .rank-item:hover {
+    background: #D0E5F5;
+}
+
+body.purchases-page .cart-item {
+    background: #D8D2C8;
+}
+
+body.purchases-page .footer-status {
+    background: #E8E4DB;
+}
