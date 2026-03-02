@@ -23,6 +23,7 @@ yarn-error.log*
 .idea
 .agent/
 .gemini/
+.cursor/
 *.suo
 *.ntvs*
 *.njsproj
