@@ -1,38 +1,78 @@
 /**
- * Purchases page theme - 10-20% darker than Sales for visual distinction
+ * Purchases page — light cream canvas + white panels (reference layout)
+ * Metric accents: blue / green / purple; chrome aligns with Sales defaults.
  */
 body.purchases-page {
-    --bg-paper: #DDD8CC;
-    --text-ink: #1a1d1f;
-    --accent-blue: #076BB8;
-    --border-paper: #B8C2C9;
-    --success: #00997A;
-    --danger: #B32829;
+    --bg-paper: #e5e1d1;
+    --shell-bg: #ffffff;
+    --text-ink: #2d3436;
+    --muted-text: #636e72;
+    --subtle-text: #74808c;
+    --accent-blue: #0070c0;
+    --border-paper: #d8d3c9;
+    --success: #00b050;
+    --danger: #d63031;
+    --purple-metric: #7030a0;
+    --nav-tab-active-bg: #ffffff;
+    --nav-tab-idle-bg: #ffffff;
+    --nav-tab-idle-hover: #f2efe8;
+}
+
+body.purchases-page {
+    background-color: var(--bg-paper);
 }
 
 body.purchases-page .sales-dashboard,
 body.purchases-page .content-wrapper,
-body.purchases-page .modal,
+body.purchases-page .modal {
+    background: var(--shell-bg);
+    border-color: var(--border-paper);
+    border-radius: 8px;
+}
+
 body.purchases-page .drawer {
-    background: #E8E4DB;
+    background: var(--shell-bg);
+    border-color: var(--border-paper);
 }
 
-body.purchases-page .product-card {
-    background: #E8E4DB;
+body.purchases-page .sales-dashboard,
+body.purchases-page .content-wrapper {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
 }
 
-body.purchases-page .rank-item {
-    background: #D8D2C8;
+body.purchases-page .header-brand-row p {
+    color: var(--muted-text);
+    font-size: 0.9rem;
 }
 
-body.purchases-page .rank-item:hover {
-    background: #D0E5F5;
+body.purchases-page .revenue-grand .dash-value {
+    text-shadow: 0 0 20px rgba(0, 112, 192, 0.12);
 }
 
-body.purchases-page .cart-item {
-    background: #D8D2C8;
+body.purchases-page .revenue-selected .dash-value {
+    text-shadow: 0 0 20px rgba(0, 176, 80, 0.12);
 }
 
-body.purchases-page .footer-status {
-    background: #E8E4DB;
+body.purchases-page .revenue-percent .dash-value {
+    color: var(--purple-metric);
+    text-shadow: 0 0 20px rgba(112, 48, 160, 0.12);
+}
+
+body.purchases-page .org-logo-wrap {
+    background: #f4f1eb;
+}
+
+body.purchases-page .org-logo-wrap:hover {
+    background: rgba(0, 112, 192, 0.06);
+}
+
+body.purchases-page .sort-btn.active,
+body.purchases-page .filter-btn.active {
+    box-shadow: 0 4px 10px rgba(0, 112, 192, 0.18);
+}
+
+/* Thead uses var(--bg-paper); keep headers dark for contrast on the cream strip. */
+body.purchases-page th {
+    color: var(--text-ink);
+    font-weight: 700;
 }

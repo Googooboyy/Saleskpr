@@ -18,12 +18,53 @@ window.showToast = (message, duration = 3000) => {
     }, duration);
 };
 
+/** Main nav folder tabs: call after modal toggles or on load (sales / purchases / help). */
+window.setMainNavTab = (active) => {
+    const nav = document.querySelector('.main-nav');
+    if (!nav) return;
+    nav.querySelectorAll('[data-nav-tab]').forEach((el) => {
+        const isActive = el.dataset.navTab === active;
+        el.classList.toggle('nav-tab--active', isActive);
+        if (el.tagName === 'A') {
+            if (isActive) el.setAttribute('aria-current', 'page');
+            else el.removeAttribute('aria-current');
+        } else {
+            el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        }
+    });
+};
+
+window.refreshMainNavAfterModal = () => {
+    if (!document.querySelector('.main-nav')) return;
+    const page = document.body.dataset.appPage;
+    if (page === 'help') {
+        setMainNavTab('help');
+        return;
+    }
+    if (page === 'sales') {
+        const cartOpen = document.getElementById('cart-drawer-overlay')?.classList.contains('active');
+        const logOpen = document.getElementById('sales-log-modal')?.classList.contains('active');
+        if (cartOpen) setMainNavTab('cart');
+        else if (logOpen) setMainNavTab('sales-log');
+        else setMainNavTab('sales');
+        return;
+    }
+    if (page === 'purchases') {
+        const cartOpen = document.getElementById('cart-drawer-overlay')?.classList.contains('active');
+        const logOpen = document.getElementById('purchases-log-modal')?.classList.contains('active');
+        if (cartOpen) setMainNavTab('cart');
+        else if (logOpen) setMainNavTab('purchases-log');
+        else setMainNavTab('purchases');
+    }
+};
+
 window.toggleModal = (modal, show) => {
     if (!modal) return;
     modal.classList.toggle('active', show);
     modal.closest('.modal-overlay')?.classList.toggle('active', show);
     const anyModalActive = document.querySelectorAll('.modal-overlay.active').length > 0;
     document.body.classList.toggle('modal-open', anyModalActive);
+    if (typeof window.refreshMainNavAfterModal === 'function') window.refreshMainNavAfterModal();
 };
 
 // Organisation branding (logo + name) – stored in localStorage, used in chits/logs
@@ -39,6 +80,10 @@ window.renderOrgNameDisplay = () => {
     display.classList.toggle('placeholder', !name);
     btn.textContent = name ? 'Edit' : 'Add name';
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.refreshMainNavAfterModal === 'function') window.refreshMainNavAfterModal();
+});
 
 window.initOrgBranding = () => {
     const logoInput = document.getElementById('org-logo-input');

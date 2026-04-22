@@ -54,6 +54,11 @@ const migrateLegacyData = () => {
             p.status = [p.status];
             migratedProducts = true;
         }
+        if (p.purchasePrice == null || Number.isNaN(Number(p.purchasePrice))) {
+            const base = typeof p.price === 'number' && !Number.isNaN(p.price) ? p.price : parseFloat(p.price);
+            p.purchasePrice = Number.isFinite(base) ? base : 0;
+            migratedProducts = true;
+        }
     });
 
     if (migratedProducts) {
@@ -504,7 +509,7 @@ const renderProducts = () => {
                 <div class="card-footer" style="display:block">
                     <div style="display:flex; justify-content:space-between; align-items:center; width:100%">
                         <div class="card-meta">
-                            <div class="p-price" title="${lastSale ? 'Last Price' : 'Default Price'}">${formatCurrency(displayPrice)}</div>
+                            <div class="p-price" title="${lastSale ? 'Last sale price' : 'Default sales price'}">${formatCurrency(displayPrice)}</div>
                             <div class="p-stock">${p.stock} in stock</div>
                         </div>
                         <button class="btn btn-sell" onclick="openSaleModal('${p.id}')">
@@ -765,7 +770,7 @@ const exportCartAsChit = (quiet = false) => {
     lines.push(`TOTAL${''.padEnd(33)}${formatCurrency(total)}`);
     lines.push('========================================');
     lines.push('');
-    lines.push('Powered by Saleskpr.Mar.Sg');
+    lines.push('Powered by SalesKpr · https://mar.sg');
 
     const content = lines.join('\n');
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -1043,11 +1048,28 @@ window.selectType = (type) => {
 productForm.onsubmit = async (e) => {
     e.preventDefault();
     const id = document.getElementById('product-id').value;
+    const purchasePrice = parseFloat(document.getElementById('p-purchase-price').value);
+    const salesPrice = parseFloat(document.getElementById('p-sales-price').value);
+    const stockRaw = document.getElementById('p-stock').value;
+    const stock = parseInt(stockRaw, 10);
+    if (Number.isNaN(purchasePrice) || purchasePrice < 0) {
+        alert('Please enter a valid purchase price (0 or more).');
+        return;
+    }
+    if (Number.isNaN(salesPrice) || salesPrice < 0) {
+        alert('Please enter a valid sales price (0 or more).');
+        return;
+    }
+    if (stockRaw.trim() === '' || Number.isNaN(stock) || stock < 0) {
+        alert('Please enter a valid stock level (0 or more).');
+        return;
+    }
     const data = {
         name: document.getElementById('p-name').value,
         type: document.getElementById('p-type').value,
-        price: parseFloat(document.getElementById('p-price').value),
-        stock: parseInt(document.getElementById('p-stock').value),
+        purchasePrice,
+        price: salesPrice,
+        stock,
         status: Array.from(pStatusContainer.querySelectorAll('input[name="status"]:checked')).map(cb => cb.value),
         description: document.getElementById('p-desc').value,
     };
@@ -1118,7 +1140,8 @@ window.editProduct = (id) => {
     document.getElementById('modal-title').textContent = 'Edit Product';
     document.getElementById('product-id').value = p.id;
     document.getElementById('p-name').value = p.name;
-    document.getElementById('p-price').value = p.price;
+    document.getElementById('p-purchase-price').value = p.purchasePrice != null && !Number.isNaN(Number(p.purchasePrice)) ? p.purchasePrice : (p.price ?? '');
+    document.getElementById('p-sales-price').value = p.price ?? '';
     document.getElementById('p-stock').value = p.stock;
     renderStatusOptions();
     if (p.status && Array.isArray(p.status)) {
@@ -1260,6 +1283,17 @@ window.voidSale = (id) => {
     renderProducts();
     renderSalesLog();
 };
+
+// Deep links from Help / bookmarks: #sales-log, #cart
+(() => {
+    const h = location.hash.slice(1);
+    if (h === 'sales-log') {
+        renderSalesLog();
+        toggleModal(salesLogModal, true);
+    } else if (h === 'cart') {
+        toggleModal(document.getElementById('cart-drawer-overlay'), true);
+    }
+})();
 
 // Init
 [...document.querySelectorAll('.modal-overlay')].forEach(m => {

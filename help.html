@@ -4,24 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a233e">
+    <meta name="msapplication-TileColor" content="#1a233e">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    <link rel="icon" href="favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="favicon/site.webmanifest">
     <title>SalesKpr | Help & How to Use</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body data-app-page="help">
     <div class="app-container help-page">
         <header class="header">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="logo/logo-saleskpr-4c-fancy.jpg" alt="SalesKpr Logo" class="brand-logo">
-                <div>
-                    <h1>SalesKpr</h1>
-                    <p>Help & How to Use</p>
+            <div class="header-brand-row">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="logo/logo-saleskpr-4c-fancy.jpg" alt="SalesKpr Logo" class="brand-logo">
+                    <div>
+                        <h1>SalesKpr</h1>
+                        <p>Help & How to Use</p>
+                    </div>
                 </div>
             </div>
-            <div class="header-actions">
-                <a href="index.html" class="btn" style="text-decoration: none; color: inherit;">Sales</a>
-                <a href="purchases.html" class="btn" style="text-decoration: none; color: inherit;">Purchases</a>
-            </div>
+            <nav class="main-nav" aria-label="Main sections">
+                <div class="main-nav-tabs">
+                    <div class="main-nav-tabs__left">
+                        <a href="index.html" class="nav-tab" data-nav-tab="sales">Sales</a>
+                        <a href="purchases.html" class="nav-tab" data-nav-tab="purchases">Purchases</a>
+                    </div>
+                    <div class="main-nav-tabs__center">
+                        <a href="help.html" class="nav-tab" data-nav-tab="help">Help</a>
+                    </div>
+                    <div class="main-nav-tabs__right">
+                        <a href="index.html#sales-log" class="nav-tab" data-nav-tab="sales-log">Sales log</a>
+                        <a href="purchases.html#purchases-log" class="nav-tab" data-nav-tab="purchases-log">Purchases log</a>
+                        <a href="index.html#cart" class="nav-tab" data-nav-tab="cart">Cart</a>
+                    </div>
+                </div>
+            </nav>
         </header>
 
         <main class="help-content">
@@ -56,7 +78,7 @@
                         <strong>SalesKpr</strong> is an app that helps you keep track of what you sell and what you buy. Think of it like a digital notebook that remembers:
                     </p>
                     <ul>
-                        <li><strong>Products</strong> — the things you sell (name, price, how many you have in stock)</li>
+                        <li><strong>Products</strong> — the things you sell (name, purchase and sales prices, how many you have in stock)</li>
                         <li><strong>Sales</strong> — when someone buys something from you (what they bought, how many, and for how much)</li>
                         <li><strong>Purchases</strong> — when you buy stock or supplies (so you can see your costs)</li>
                     </ul>
@@ -70,7 +92,7 @@
                     <h2>2. Getting started</h2>
                     <p>To use SalesKpr, you only need to do two things first:</p>
                     <ol>
-                        <li><strong>Add at least one product.</strong> A product is something you sell — for example "Blue Notebook" or "Business Cards". You give it a name, a price, and how many you have (stock).</li>
+                        <li><strong>Add at least one product.</strong> A product is something you sell — for example "Blue Notebook" or "Business Cards". You give it a name, purchase and sales prices, and how many you have (stock).</li>
                         <li><strong>Record a sale when someone buys.</strong> You choose the product, how many they bought, and the price. The app then reduces your stock automatically.</li>
                     </ol>
                     <p>
@@ -89,8 +111,9 @@
                             <ul>
                                 <li><strong>Product Name</strong> — e.g. "Premium Leather Notebook"</li>
                                 <li><strong>Product Type</strong> — choose from the list (e.g. Notebook, Notepad). You can add new types by clicking <strong>Manage</strong> next to Product Type.</li>
-                                <li><strong>Price ($)</strong> — the selling price per unit</li>
-                                <li><strong>Stock Level</strong> — how many you have right now (use 0 if out of stock)</li>
+                                <li><strong>Purchase Price ($)</strong> — what you pay per unit (used as the default on the Purchases page)</li>
+                                <li><strong>Sales Price ($)</strong> — what you charge per unit (used as the default on the Sales page)</li>
+                                <li><strong>Stock Level</strong> — how many you have right now (0 is allowed if you are out of stock)</li>
                                 <li><strong>Status Tag</strong> — optional labels like "Running Low", "Coming Soon", or "Discontinued". You can add more by clicking <strong>Manage</strong> next to Status Tag.</li>
                                 <li><strong>Product Image</strong> — optional. You can upload a image file or paste an image URL.</li>
                                 <li><strong>Description</strong> — optional extra details.</li>
@@ -100,7 +123,7 @@
                     </ol>
 
                     <h3>Editing a product</h3>
-                    <p>Click on a product card. The same form opens so you can change the name, price, stock, image, or anything else. Click <strong>Save Product</strong> when done.</p>
+                    <p>Click on a product card. The same form opens so you can change the name, purchase or sales price, stock, image, or anything else. Click <strong>Save Product</strong> when done.</p>
 
                     <h3>Product Type and "Manage"</h3>
                     <p>
@@ -282,19 +305,20 @@
 
         <footer class="app-footer">
             <div class="footer-content">
-                <div class="footer-brand">
+                <a href="https://mar.sg" class="footer-brand" target="_blank" rel="noopener noreferrer">
                     <img src="logo/logo-saleskpr-4c-fancy.jpg" alt="SalesKpr Logo" class="brand-logo brand-logo-footer">
                     <div class="footer-brand-text">
                         <span class="brand-text">SalesKpr</span>
                         <span class="brand-tagline">Sell. Track. Grow.</span>
                     </div>
-                </div>
+                </a>
                 <div class="footer-copyright">
-                    <a href="index.html" style="color: inherit;">Back to Sales</a> &nbsp;·&nbsp; <a href="purchases.html" style="color: inherit;">Purchases</a>
+                    © 2026 <a href="https://mar.sg" target="_blank" rel="noopener noreferrer">mar.sg</a> &nbsp;·&nbsp; <a href="index.html" style="color: inherit;">Back to Sales</a> &nbsp;·&nbsp; <a href="purchases.html" style="color: inherit;">Purchases</a>
                 </div>
             </div>
         </footer>
     </div>
+    <script src="shared.js"></script>
 </body>
 
 </html>

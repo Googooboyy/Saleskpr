@@ -30,6 +30,11 @@ const migrateLegacyData = () => {
             p.status = [p.status];
             migratedProducts = true;
         }
+        if (p.purchasePrice == null || Number.isNaN(Number(p.purchasePrice))) {
+            const base = typeof p.price === 'number' && !Number.isNaN(p.price) ? p.price : parseFloat(p.price);
+            p.purchasePrice = Number.isFinite(base) ? base : 0;
+            migratedProducts = true;
+        }
     });
 
     if (migratedProducts) {
@@ -361,7 +366,7 @@ const renderProducts = () => {
     } else if (currentSort === 'stock') {
         sortedProducts.sort((a, b) => a.stock - b.stock);
     } else if (currentSort === 'price') {
-        sortedProducts.sort((a, b) => b.price - a.price);
+        sortedProducts.sort((a, b) => (b.purchasePrice ?? b.price) - (a.purchasePrice ?? a.price));
     } else if (currentSort === 'date') {
         sortedProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     }
@@ -395,7 +400,7 @@ const renderProducts = () => {
         card.setAttribute('data-product-id', p.id);
         const getStatusClass = (status) => `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
         const lastPurchase = purchases.find(pur => pur.productId === p.id && !pur.voided);
-        const displayPrice = lastPurchase ? lastPurchase.price : p.price;
+        const displayPrice = lastPurchase ? lastPurchase.price : (p.purchasePrice ?? p.price);
 
         card.innerHTML = `
             <div class="product-hero" style="background-image: ${p.image ? `url(${p.image})` : 'none'}; cursor: pointer;" title="View Full Image" onclick="viewImage('${p.image || ''}')">
@@ -419,7 +424,7 @@ const renderProducts = () => {
                 <div class="card-footer" style="display:block">
                     <div style="display:flex; justify-content:space-between; align-items:center; width:100%">
                         <div class="card-meta">
-                            <div class="p-price" title="${lastPurchase ? 'Last Cost' : 'Default Price'}">${formatCurrency(displayPrice)}</div>
+                            <div class="p-price" title="${lastPurchase ? 'Last Cost' : 'Default purchase price'}">${formatCurrency(displayPrice)}</div>
                             <div class="p-stock">${p.stock} in stock</div>
                         </div>
                         <button class="btn btn-sell" onclick="openPurchaseModal('${p.id}')">Purchase</button>
@@ -568,7 +573,7 @@ document.querySelectorAll('[id^="close-"]').forEach(btn => {
 window.openPurchaseModal = (id) => {
     const p = products.find(prod => prod.id === id);
     const lastPurchase = purchases.find(pur => pur.productId === id && !pur.voided);
-    const initialPrice = lastPurchase ? lastPurchase.price : p.price;
+    const initialPrice = lastPurchase ? lastPurchase.price : (p.purchasePrice ?? p.price);
 
     document.getElementById('purchase-product-name').textContent = p.name;
     document.getElementById('purchase-product-id').value = p.id;
@@ -888,11 +893,28 @@ window.selectType = (type) => {
 productForm.onsubmit = async (e) => {
     e.preventDefault();
     const id = document.getElementById('product-id').value;
+    const purchasePrice = parseFloat(document.getElementById('p-purchase-price').value);
+    const salesPrice = parseFloat(document.getElementById('p-sales-price').value);
+    const stockRaw = document.getElementById('p-stock').value;
+    const stock = parseInt(stockRaw, 10);
+    if (Number.isNaN(purchasePrice) || purchasePrice < 0) {
+        alert('Please enter a valid purchase price (0 or more).');
+        return;
+    }
+    if (Number.isNaN(salesPrice) || salesPrice < 0) {
+        alert('Please enter a valid sales price (0 or more).');
+        return;
+    }
+    if (stockRaw.trim() === '' || Number.isNaN(stock) || stock < 0) {
+        alert('Please enter a valid stock level (0 or more).');
+        return;
+    }
     const data = {
         name: document.getElementById('p-name').value,
         type: document.getElementById('p-type').value,
-        price: parseFloat(document.getElementById('p-price').value),
-        stock: parseInt(document.getElementById('p-stock').value),
+        purchasePrice,
+        price: salesPrice,
+        stock,
         status: Array.from(pStatusContainer.querySelectorAll('input[name="status"]:checked')).map(cb => cb.value),
         description: document.getElementById('p-desc').value,
     };
@@ -957,7 +979,8 @@ window.editProduct = (id) => {
     document.getElementById('modal-title').textContent = 'Edit Product';
     document.getElementById('product-id').value = p.id;
     document.getElementById('p-name').value = p.name;
-    document.getElementById('p-price').value = p.price;
+    document.getElementById('p-purchase-price').value = p.purchasePrice != null && !Number.isNaN(Number(p.purchasePrice)) ? p.purchasePrice : (p.price ?? '');
+    document.getElementById('p-sales-price').value = p.price ?? '';
     document.getElementById('p-stock').value = p.stock;
     renderStatusOptions();
     if (p.status && Array.isArray(p.status)) {
@@ -1100,6 +1123,17 @@ window.voidPurchase = (id) => {
 
 document.getElementById('close-purchase-modal').onclick = () => toggleModal(purchaseModal, false);
 document.getElementById('close-supplier-modal').onclick = () => toggleModal(supplierModal, false);
+
+// Deep links from Help / bookmarks: #purchases-log, #cart
+(() => {
+    const h = location.hash.slice(1);
+    if (h === 'purchases-log') {
+        renderPurchasesLog();
+        toggleModal(purchasesLogModal, true);
+    } else if (h === 'cart') {
+        toggleModal(document.getElementById('cart-drawer-overlay'), true);
+    }
+})();
 
 // Modal backdrop close
 [...document.querySelectorAll('.modal-overlay')].forEach(m => {

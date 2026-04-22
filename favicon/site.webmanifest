@@ -1,0 +1,23 @@
+{
+  "name": "SalesKpr",
+  "short_name": "SalesKpr",
+  "description": "Sell. Track. Grow.",
+  "start_url": "../index.html",
+  "display": "standalone",
+  "background_color": "#1a233e",
+  "theme_color": "#1a233e",
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

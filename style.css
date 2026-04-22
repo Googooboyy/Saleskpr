@@ -6,6 +6,9 @@
     --success: #00B894;
     --danger: #D63031;
     --transition: all 0.2s ease;
+    --nav-tab-active-bg: #ffffff;
+    --nav-tab-idle-bg: #e8eaed;
+    --nav-tab-idle-hover: #dde1e6;
 }
 
 * {
@@ -31,14 +34,22 @@ body.modal-open {
     padding: 0 15px;
 }
 
-/* Header Styles */
+/* Header + folder-style main nav */
 .header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+    margin-bottom: 15px;
+}
+
+.header-brand-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--text-ink);
-    margin-bottom: 15px;
 }
 
 .header h1 {
@@ -49,9 +60,97 @@ body.modal-open {
     margin-bottom: 0;
 }
 
-.header-actions {
+.main-nav {
+    border-bottom: 2px solid var(--text-ink);
+    padding: 0;
+    margin: 0;
+}
+
+.main-nav-tabs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: flex-end;
+    column-gap: 12px;
+    margin-bottom: -2px;
+}
+
+.main-nav-tabs__left,
+.main-nav-tabs__center,
+.main-nav-tabs__right {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.main-nav-tabs__left {
+    justify-content: flex-start;
+}
+
+.main-nav-tabs__center {
+    justify-content: center;
+}
+
+.main-nav-tabs__right {
+    justify-content: flex-end;
+}
+
+.nav-tab {
+    appearance: none;
+    margin: 0;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-ink);
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px 10px;
+    border: 1px solid #b8c0c8;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background: var(--nav-tab-idle-bg);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    position: relative;
+    z-index: 0;
+    line-height: 1.2;
+}
+
+.nav-tab:hover {
+    background: var(--nav-tab-idle-hover);
+    border-color: #9aa3ad;
+}
+
+.nav-tab:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+    z-index: 2;
+}
+
+.nav-tab--active {
+    background: var(--text-ink);
+    color: #f7f8fa;
+    border-color: var(--text-ink);
+    border-width: 2px;
+    border-bottom: 2px solid var(--nav-tab-active-bg);
+    padding: 8px 13px 9px;
+    margin-bottom: -2px;
+    font-weight: 800;
+    z-index: 1;
+}
+
+.nav-tab--active:hover {
+    background: #3d4548;
+    border-color: #3d4548;
+    color: #ffffff;
+}
+
+.nav-tab svg {
+    flex-shrink: 0;
+    opacity: 0.85;
 }
 
 /* Sales Mini Dashboard */
@@ -442,15 +541,6 @@ body.modal-open {
     border-color: #ced6e0;
 }
 
-.btn-nav-action {
-    background: #E8EAED;
-    border-color: #D1D5DB;
-}
-.btn-nav-action:hover {
-    background: #DDE0E4;
-    border-color: #BCC2C9;
-}
-
 .btn:active {
     transform: translateY(1px);
 }
@@ -698,6 +788,15 @@ textarea {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+a.footer-brand {
+    text-decoration: none;
+    color: inherit;
+}
+
+a.footer-brand:hover .brand-text {
+    color: var(--accent-blue);
 }
 
 .brand-logo {
